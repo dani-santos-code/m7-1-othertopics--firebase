@@ -34,6 +34,22 @@ const AppProvider = ({ children, signInWithGoogle, user, signOut }) => {
         email: user.email,
         photoURL: user.photoURL,
       });
+
+      fetch(`/users`, {
+        method: "post",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          displayName: user.displayName,
+          email: user.email,
+          photoURL: user.photoURL,
+        }),
+      })
+        .then((res) => res.json())
+        .then((json) => {
+          setAppUser(json.data);
+        });
     }
   }, [user]);
   return (
