@@ -6,7 +6,9 @@ import { AppContext } from "./AppContext";
 
 const App = () => {
   const {} = useContext(AppContext);
-  const { appUser, signInWithGoogle, handleSignOut } = useContext(AppContext);
+  const { appUser, signInWithGoogle, handleSignOut, message } = useContext(
+    AppContext
+  );
 
   return (
     <StyledPageWrapper>
@@ -26,6 +28,7 @@ const App = () => {
         )}
       </StyledHeader>
       <StyledContainer>Content</StyledContainer>
+      <StyledContainer>{message}</StyledContainer>
     </StyledPageWrapper>
   );
 };

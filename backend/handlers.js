@@ -21,19 +21,51 @@ admin.initializeApp({
 });
 const db = admin.database();
 
-const getUser = async (email) => {};
+const queryDatabase = async (key) => {
+  const ref = db.ref(key);
+  let data;
+  await ref.once(
+    "value",
+    (snapshot) => {
+      data = snapshot.val();
+    },
+    (err) => {
+      console.log(err);
+    }
+  );
+
+  return data;
+};
+
+const getUser = async (email) => {
+  const data = (await queryDatabase(`appUsers`)) || {};
+  const dataValue = Object.keys(data)
+    .map((item) => data[item])
+    .find((obj) => obj.email === email);
+
+  return dataValue || false;
+};
 
 const createUser = async (req, res) => {
-  const appUsersRef = db.ref("appUsers");
-  appUsersRef.push(req.body).then(() => {
-    res.status(200).json({
-      status: 200,
-      data: req.body,
-      message: "new user",
+  const returningUser = await getUser(req.body.email);
+  if (returningUser) {
+    res
+      .status(200)
+      .json({ status: 200, data: req.body, message: "returning user" });
+    return;
+  } else {
+    const appUsersRef = db.ref("appUsers");
+    appUsersRef.push(req.body).then(() => {
+      res.status(200).json({
+        status: 200,
+        data: req.body,
+        message: "new user",
+      });
     });
-  });
+  }
 };
 
 module.exports = {
   createUser,
+  getUser,
 };

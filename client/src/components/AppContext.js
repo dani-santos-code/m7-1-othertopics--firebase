@@ -23,9 +23,11 @@ const providers = {
 
 const AppProvider = ({ children, signInWithGoogle, user, signOut }) => {
   const [appUser, setAppUser] = useState({});
+  const [message, setMessage] = useState("");
   const handleSignOut = () => {
     signOut();
     setAppUser({});
+    setMessage("");
   };
   useEffect(() => {
     if (user) {
@@ -49,11 +51,14 @@ const AppProvider = ({ children, signInWithGoogle, user, signOut }) => {
         .then((res) => res.json())
         .then((json) => {
           setAppUser(json.data);
+          setMessage(json.message);
         });
     }
   }, [user]);
   return (
-    <AppContext.Provider value={{ appUser, signInWithGoogle, handleSignOut }}>
+    <AppContext.Provider
+      value={{ appUser, signInWithGoogle, handleSignOut, message }}
+    >
       {children}
     </AppContext.Provider>
   );
